@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 public class ProcessConnector {
 
         public static void main(String[] args) {
-            String processCommand = "C:\\\\Riot Games\\\\League of Legends\\\\LeagueClientUx.exe"; // Replace with the command for the target game
+            String processCommand = "C:\\\\Riot Games\\\\League of Legends\\\\LeagueClientUx.exe";
 
             try {
                 Process process = Runtime.getRuntime().exec(processCommand);
@@ -19,7 +19,6 @@ public class ProcessConnector {
                     System.out.println(line);
                 }
 
-                // Wait for the process to finish
                 int exitCode = process.waitFor();
                 System.out.println("pid:" + process.pid());
                 System.out.println("Process finished with exit code: " + exitCode);

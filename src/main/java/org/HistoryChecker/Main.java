@@ -64,5 +64,3 @@ public class Main {
     }
 
 }
-
-   // Goleaun, tempbkvrkulkhccw, Egirl Uwu, Estsawy, L9 DOG MOVEMENT, VIP the best, why he left, Dava Peňašku, EDG Killaki, fiflak, tekkmaus, lluko4 twitter, u s, YassouT31, wxks meow, 65472572547 v2, homer, ALA KING, PORNSTAR XERATH, gliding atm, Leaguesharp, 72119, dj khaled khaled, Hannah rose, l9 psz ap0 rat,

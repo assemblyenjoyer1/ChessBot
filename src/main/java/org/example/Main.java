@@ -24,7 +24,7 @@ public class Main {
         WebDriver driver = new ChromeDriver();
 
         try {
-            driver.get("https://www.chess.com/play/computer"); // Replace with the actual URL
+            driver.get("https://www.chess.com/play/computer");
             while(true){
 
                 sleep(500);
