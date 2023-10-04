@@ -68,11 +68,13 @@ public class LeagueService {
         return match;
     }
 
-    public HttpResponse<JsonNode> getMatchHistoryResponse(MatchRegion matchRegion, String puuid){
+    public HttpResponse<JsonNode> getMatchHistoryResponse(MatchRegion matchRegion, String puuid, int startIndex){
         HttpResponse<JsonNode> matchHistoryResponse = null;
         try{
             String apiKey = System.getenv("API_KEY");
-            String matchHistoryUrl = "https://" + matchRegion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids?queue=420&type=ranked&start=0&count=100&api_key=" + apiKey;
+            String matchHistoryUrl = "https://" + matchRegion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids?queue=420&type=ranked&start=" + startIndex + "&count=100&api_key=" + apiKey;
+            //String matchHistoryUrl = "https://" + matchRegion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids?start=" + startIndex + "&count=100&api_key=" + apiKey;
+
             matchHistoryResponse = Unirest.get(matchHistoryUrl).asJson();
         }catch(UnirestException e){
             System.out.println("unable to get matchhistory response");

@@ -18,41 +18,73 @@ public class Main {
 
     public static void main(String[] args) {
         List<String> gameIds = new ArrayList<>();
+        ArrayList<String> userNames = new ArrayList<>();
         Gson gson = new Gson();
 
         LeagueService leagueService = new LeagueService();
-        Summoner summoner = leagueService.getSummonerByName(Region.EUN1, "SPYROPOULOS 1V9");
+        Summoner summoner = leagueService.getSummonerByName(Region.EUN1, "Snoopy");
+        Summoner targetSummoner = leagueService.getSummonerByName(Region.EUN1, "Bad Butmad");
+        //String puuid = "qjcTTW5H-5pJHb7cec5n7t8WrUZuKNXSmHlbUUCLy9D_lz8lu9DLCucYPXfURF32SlBrqev226gT9Q";
         String puuid = summoner.getPuuid();
-        HttpResponse<JsonNode> result = leagueService.getMatchHistoryResponse(MatchRegion.EUROPE, puuid);
-        JSONArray matchHistoryArrayJson = result.getBody().getArray();
-        String[] stringArray = gson.fromJson(String.valueOf(matchHistoryArrayJson), String[].class);
-
+        String targetPuuid = targetSummoner.getPuuid();
+        System.out.println("target puuid: " + targetPuuid);
         int counter = 0;
-        for (String x : stringArray) {
-            sleep(1000);
-            Match match = leagueService.getMatchHistoryData(MatchRegion.EUROPE, x);
-            boolean foundSomething = false;
-            if (match.getInfo().getParticipants() == null){
-                return;
+        int startIndex = 0;
+        boolean lastRotation = true;
+
+        while(lastRotation){
+            System.out.println("Current StartIndex: " + startIndex);
+            HttpResponse<JsonNode> result = leagueService.getMatchHistoryResponse(MatchRegion.EUROPE, puuid, startIndex);
+            startIndex += 100;
+            JSONArray matchHistoryArrayJson = result.getBody().getArray();
+            if(matchHistoryArrayJson.length() < 100){
+                lastRotation = false;
+                System.out.println("Last Rotation started");
             }
-            for (Participant participant : match.getInfo().getParticipants()) {
-                if (participant.getSummonerName().equalsIgnoreCase("lethality kayle")) {
-                    System.out.println("Played a game together. Match-ID: " + x);
-                    foundSomething = true;
-                    counter++;
-                    gameIds.add(x);
-                    break;
+            String[] stringArray = gson.fromJson(String.valueOf(matchHistoryArrayJson), String[].class);
+            System.out.println("Result from api received - we got: " + stringArray.length + " matches.");
+            if(stringArray.length < 10){
+                break;
+            }
+            for (String x : stringArray) {
+                sleep(1500);
+                Match match = leagueService.getMatchHistoryData(MatchRegion.EUROPE, x);
+
+                if (match.getInfo() != null) {
+                    boolean foundSomething = false;
+                    for (Participant participant : match.getInfo().getParticipants()) {
+                        if (participant.getPuuid().equalsIgnoreCase(targetPuuid)) {
+                            System.out.println("Played a game together. Match-ID: " + x);
+                            foundSomething = true;
+                            counter++;
+                            gameIds.add(x);
+                        }
+                        if(participant.getPuuid().equalsIgnoreCase(puuid)){
+                            if(!userNames.contains(participant.getSummonerName())){
+                                System.out.println("new username found - added it to list");
+                                userNames.add(participant.getSummonerName());
+
+                                userNames.forEach(System.out::println);
+                            }
+                        }
+                    }
+                    if (!foundSomething) {
+                        System.out.println("Checked game, nothing found. Match-ID: " + x);
+                    }
+                    System.out.println("Current amount of games found: " + counter);
+                } else {
+                    System.out.println("Match info is null for Match-ID: " + x);
                 }
             }
-            if (!foundSomething) {
-                System.out.println("Checked game, nothing found. Match-ID: " + x);
-            }
-            System.out.println("Current amount of games found: " + counter);
+
         }
 
         System.out.println("Finished Program. Games together played: " + counter);
         System.out.println("Game IDs:");
         gameIds.forEach(System.out::println);
+        System.out.println(" - - - - - - - - - - -");
+        System.out.println("Now printing user names the user had");
+        userNames.forEach(System.out::println);
     }
 
     private static void sleep(int milliseconds) {
