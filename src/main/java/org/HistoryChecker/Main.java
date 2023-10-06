@@ -19,11 +19,12 @@ public class Main {
     public static void main(String[] args) {
         List<String> gameIds = new ArrayList<>();
         ArrayList<String> userNames = new ArrayList<>();
+        ArrayList<String> intList = new ArrayList<>();
         Gson gson = new Gson();
 
         LeagueService leagueService = new LeagueService();
-        Summoner summoner = leagueService.getSummonerByName(Region.EUN1, "Snoopy");
-        Summoner targetSummoner = leagueService.getSummonerByName(Region.EUN1, "Bad Butmad");
+        Summoner summoner = leagueService.getSummonerByName(Region.EUW1, "Vinciors");
+        Summoner targetSummoner = leagueService.getSummonerByName(Region.EUW1, "flamemountain");
         //String puuid = "qjcTTW5H-5pJHb7cec5n7t8WrUZuKNXSmHlbUUCLy9D_lz8lu9DLCucYPXfURF32SlBrqev226gT9Q";
         String puuid = summoner.getPuuid();
         String targetPuuid = targetSummoner.getPuuid();
@@ -66,6 +67,10 @@ public class Main {
 
                                 userNames.forEach(System.out::println);
                             }
+                            if(participant.getDeaths() > 15){
+                                System.out.println("int game found - added it to list");
+                                intList.add(match.getMetadata().getMatchId());
+                            }
                         }
                     }
                     if (!foundSomething) {
@@ -85,6 +90,8 @@ public class Main {
         System.out.println(" - - - - - - - - - - -");
         System.out.println("Now printing user names the user had");
         userNames.forEach(System.out::println);
+        System.out.println("int games:");
+        intList.forEach(System.out::println);
     }
 
     private static void sleep(int milliseconds) {
